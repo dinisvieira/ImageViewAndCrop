@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:customControls="clr-namespace:ImageCrop.CustomControls;assembly=ImageCrop"
+             x:Class="ImageCrop.PhotoViewPage">
+
+    <!--<StackLayout>
+
+        <StackLayout Orientation="Horizontal">
+            <Stepper HorizontalOptions="FillAndExpand" Increment="10" Minimum="-50" Maximum="50" Value="{Binding XOffset}"/>
+            <Stepper HorizontalOptions="FillAndExpand" Increment="10" Minimum="-50" Maximum="50" Value="{Binding YOffset}"/>
+            <Stepper HorizontalOptions="FillAndExpand" Increment="0.5" Minimum="1" Maximum="4" Value="{Binding Zoom}"/>
+        </StackLayout>    
+            
+        <controls:ImageCropView HeightRequest="300" WidthRequest="300" x:Name="cropView"
+                               ManualOffsetX="{Binding XOffset}" ManualOffsetY="{Binding YOffset}" ManualZoom="{Binding Zoom}"
+                               PreviewTransformations="{Binding PreviewTransformations}"
+                               ImageRotation="{Binding Rotation}" 
+                               Delay="30"
+                               PanSpeed="1.2"
+                               Source="http://photos2.insidercdn.com/iphone4scamera-111004-full.JPG">
+        </controls:ImageCropView>
+            
+        <Label HorizontalTextAlignment="Center" Text="Source file resolution is 3264 × 2448 pixels!"/>
+            
+        <StackLayout Orientation="Horizontal">
+            <Button HorizontalOptions="FillAndExpand" x:Name="rotateButton" Text="Rotate" Command="{Binding RotateCommand}"/>
+            <Button HorizontalOptions="FillAndExpand" x:Name="saveButton" Text="Save"/>
+        </StackLayout>
+            
+        <forms:CachedImage HorizontalOptions="Center" HeightRequest="100" WidthRequest="100" Aspect="Fill" Source="{Binding SavedImage}"/>
+                
+    </StackLayout>-->
+
+    <!-- Pinch and Zoom control -->
+    <Grid HorizontalOptions="Fill" VerticalOptions="Fill">
+        <customControls:NativePhotoView x:Name="photoView"  Grid.Row="0" Grid.Column="0" ImagePath="https://photos2.insidercdn.com/iphone4scamera-111004-full.JPG"/>
+    </Grid>
+
+</ContentPage>
