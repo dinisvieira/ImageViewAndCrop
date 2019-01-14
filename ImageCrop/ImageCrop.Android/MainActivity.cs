@@ -1,12 +1,20 @@
-﻿using Android.App;
+﻿using System.IO;
+using Android.App;
+using Android.Content;
 using Android.Content.PM;
+using Android.Net;
 using Android.Runtime;
 using Android.OS;
+using Com.Theartofdev.Edmodo.Cropper;
 using ImageCrop.Droid.Services;
 using ImageCrop.Services;
+using ImageCrop.ViewModels;
+using Java.Lang;
 using Plugin.CurrentActivity;
 using Prism;
+using Prism.Events;
 using Prism.Ioc;
+using Xamarin.Forms;
 
 namespace ImageCrop.Droid
 {
@@ -38,12 +46,61 @@ namespace ImageCrop.Droid
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
 
+        protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+
+            try
+            {
+                if (requestCode == CropImage.CropImageActivityRequestCode)
+                {
+                    CropImage.ActivityResult result = CropImage.GetActivityResult(data);
+                    if (resultCode == Result.Ok)
+                    {
+                        if(result?.Uri != null)
+                        {
+                            string uri = result.Uri.Path;
+
+                            if (File.Exists(uri))
+                            {
+
+                                using (var fs = File.Open(uri, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.None))
+                                {
+                                    using (var imgMemStream = new MemoryStream())
+                                    {
+                                        fs.CopyTo(imgMemStream);
+                                        var imgByteArr = imgMemStream.ToArray();
+
+                                        _application?.CreateNewCroppedImageEvent(imgByteArr);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //TODO: REPORT
+                        }
+                    }
+                    else if (resultCode == (Android.App.Result) CropImage.CropImageActivityResultErrorCode)
+                    {
+                        //TODO: REPORT
+                        Exception error = result.Error;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                //TODO: REPORT
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+        }
+
         public class AndroidInitializer : IPlatformInitializer
         {
             public void RegisterTypes(IContainerRegistry container)
             {
-                // Register any platform specific implementations
-                container.RegisterSingleton<IImageCropper, ImageCropper>();
+                container.RegisterSingleton<IImageCropper,ImageCropper>();
             }
         }
     }

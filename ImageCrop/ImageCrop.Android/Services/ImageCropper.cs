@@ -1,10 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Android.Content;
-using Android.Graphics;
 using Com.Theartofdev.Edmodo.Cropper;
 using ImageCrop.Services;
 using Plugin.CurrentActivity;
-using Xamarin.Forms;
 
 namespace ImageCrop.Droid.Services
 {
@@ -20,6 +17,7 @@ namespace ImageCrop.Droid.Services
                 .SetFixAspectRatio(true)
                 .SetGuidelines(CropImageView.Guidelines.Off)
                 .SetActivityTitle("Recortar Imagem")
+                .SetMultiTouchEnabled(true)
                 .SetCropMenuCropButtonTitle("Ok")
                 .SetAllowFlipping(false)
                 .SetRequestedSize(300, 300)

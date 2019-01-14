@@ -2,6 +2,7 @@
 using System.IO;
 using ImageCrop.Services;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Mvvm;
 using Prism.Navigation;
 using Xamarin.Forms;
@@ -12,12 +13,22 @@ namespace ImageCrop.ViewModels
     {
 
         private IImageCropper _imageCropper;
+        private readonly IEventAggregator _eventAggregator;
 
-        public PhotoCropPageViewModel(IImageCropper imageCropper)
+        public PhotoCropPageViewModel(IImageCropper imageCropper, IEventAggregator eventAggregator)
         {
             _imageCropper = imageCropper;
+            _eventAggregator = eventAggregator;
 
             StartCropCommand = new DelegateCommand(OnStartCropCommandExecuted);
+        }
+
+        private void OnReceiveCroppedImageResult(byte[] imgByteArr)
+        {
+            if (imgByteArr != null && imgByteArr.Length > 0)
+            {
+                LoadNewImage(imgByteArr);
+            }
         }
 
         private ImageSource _imageSource = null;
@@ -35,9 +46,7 @@ namespace ImageCrop.ViewModels
             if (imgByteArr != null && imgByteArr.Length > 0)
             {
                 Debug.WriteLine($"We got an image with {imgByteArr.Length} Length");
-                Stream stream = new MemoryStream(imgByteArr);
-                var imgSource = ImageSource.FromStream(()=> stream);
-                ImageSource = imgSource;
+                LoadNewImage(imgByteArr);
             }
             else
             {
@@ -45,14 +54,24 @@ namespace ImageCrop.ViewModels
             }
         }
 
+        private void LoadNewImage(byte[] imgByteArr)
+        {
+            Stream stream = new MemoryStream(imgByteArr);
+            var imgSource = ImageSource.FromStream(() => stream);
+            ImageSource = imgSource;
+        }
+
         public void OnNavigatedFrom(INavigationParameters parameters)
         {
-
+            MessagingCenter.Unsubscribe<App, byte[]>(this, "NewCroppedImageResult");
         }
 
         public async void OnNavigatedTo(INavigationParameters parameters)
         {
-
+            MessagingCenter.Subscribe<App, byte[]>(this, "NewCroppedImageResult", (sender, arg) =>
+            {
+                OnReceiveCroppedImageResult(arg);
+            });
         }
 
         public void OnNavigatingTo(INavigationParameters parameters)
@@ -60,4 +79,6 @@ namespace ImageCrop.ViewModels
             
         }
     }
+
+    public class NewCroppedImageResult : PubSubEvent<string> { }
 }

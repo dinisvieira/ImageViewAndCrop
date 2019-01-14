@@ -13,7 +13,7 @@ namespace ImageCrop.iOS
     [Register("AppDelegate")]
     public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
     {
-        App _application;
+        public static App _application;
 
         //
         // This method is invoked when the application has loaded and is ready to run. In this 

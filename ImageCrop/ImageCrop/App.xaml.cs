@@ -1,5 +1,4 @@
-﻿using System;
-using ImageCrop.ViewModels;
+﻿using ImageCrop.ViewModels;
 using Prism;
 using Prism.DryIoc;
 using Prism.Ioc;
@@ -26,6 +25,11 @@ namespace ImageCrop
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
             containerRegistry.RegisterForNavigation<PhotoViewPage, PhotoViewPageViewModel>();
             containerRegistry.RegisterForNavigation<PhotoCropPage, PhotoCropPageViewModel>();
+        }
+
+        public void CreateNewCroppedImageEvent(byte[] imgPath)
+        {
+            MessagingCenter.Send<App, byte[]>(this, "NewCroppedImageResult", imgPath);
         }
 
         protected override void OnStart()
